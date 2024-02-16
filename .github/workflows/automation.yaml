@@ -1,4 +1,4 @@
-name: Deploy to aapanel
+name: Deploy Demo
 
 on: 
   pull_request:
@@ -9,9 +9,9 @@ jobs:
   build:
     name: Deploy Demo
     runs-on: ubuntu-latest
-    setps:
-      -name: SSH Remote
-        uses: fifsky/ssh-action@master
+    steps:
+      - name: SSH Remote
+        uses: fifsky/ssh-action@mast
         with:
           host: ${{ secrets.SSH_HOST }}
           user: ${{ secrets.SSH_USER }}
