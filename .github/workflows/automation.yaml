@@ -14,7 +14,7 @@ jobs:
         uses: fifsky/ssh-action@master
         with:
           host: ${{ SSH_HOST }}
-          username: ${{ SSH_USER }}
+          user: ${{ SSH_USER }}
           password: ${{ SSH_PASSWORD }}
           port: ${{ SSH_PORT }}
           command: cd ../../www/wwwroot/emris && git pull origin main && npm install && npm run build && pm2 restart emris
