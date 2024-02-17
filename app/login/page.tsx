@@ -33,6 +33,9 @@ export default function Login() {
             <h1 className="text-sm font-bold">
               Rumah Sakit Umum Daerah Langsa
             </h1>
+            <h1 className="text-sm font-bold">
+              Ini Auto Update Dari Github
+            </h1>
           </div>
         </div>
         <div className="w-full max-w-sm col-start-2 col-end-4 mx-auto p-6">
