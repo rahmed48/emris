@@ -26,9 +26,9 @@ export default function Login() {
       <div className="items-center grid-cols-3 m-auto shadow-2xl lg:grid rounded-3xl">
         <div className="m-auto flex items-center justify-center lg:h-[650px] w-96 lg:bg-[url('/images/bg1.png')] bg-cover bg-center rounded-ss-3xl rounded-es-3xl">
           <div className="hidden font-bold lg:block p-6">
-            <h1 className="text-3xl font-bold my-4">Welcome To</h1>
+            <h1 className="text-3xl font-bold my-4">Selamat Datang</h1>
             <h1 className="text-xl font-bold my-2">
-              Electronic Medical Records
+              Rekam Medis Elektronik
             </h1>
             <h1 className="text-sm font-bold">
               Rumah Sakit Umum Daerah Langsa
