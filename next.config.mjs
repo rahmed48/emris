@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 import withPWAInit from "@ducanh2912/next-pwa";
+import { env } from "process";
 
 const withPWA = withPWAInit({
   dest: "public",
@@ -19,6 +20,9 @@ const withPWA = withPWAInit({
 });
 
 const nextConfig = {
+  env:{
+    BASE_URL:'http://api-project-adam.my.id:94/api/v1',
+  },
   images: {
     remotePatterns: [
       {

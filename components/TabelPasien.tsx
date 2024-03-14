@@ -1,6 +1,9 @@
 "use client";
 import {
-  faAngleRight,
+  PasienType,
+  StatusPelayananType,
+} from "@/app/home/pelayanan/[unit]/[list]/page";
+import {
   faAnglesLeft,
   faAnglesRight,
   faCapsules,
@@ -18,81 +21,51 @@ import {
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
-
-// type Pasien = {
-//   noRM: string;
-//   nama: string;
-//   jenisKelamin: string;
-//   umur: number;
-//   noIdentitas: string;
-//   noReg: string;
-//   asuransi: string;
-//   penjamin: string;
-//   noSEP: string;
-//   statusPelayanan: {
-//     id: number;
-//     kodeStatus: number;
-//     name: string;
-//     status: string;
-//   }[];
-//   keterangan: string;
-//   statusSelesai: string;
-//   alamat: string;
-// };
-
-type Pasien = {
-  kd_pasien: string;
-  no_pengenal: string;
-  nama: string;
-  tgl_lahir: string;
-};
+import { useState } from "react";
 
 const TabelPasien = ({
-  pasien,
+  listPasien,
   onPressPanggil,
   onPressTunda,
   onPressDetail,
 }: {
-  pasien: Pasien[];
-  onPressPanggil?: (pasien: Pasien) => void;
-  onPressTunda?: (pasien: Pasien) => void;
-  onPressDetail?: (pasien: Pasien) => void;
+  listPasien: PasienType[];
+  onPressPanggil?: (pasien: PasienType) => void;
+  onPressTunda?: (pasien: PasienType) => void;
+  onPressDetail?: (pasien: PasienType) => void;
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [usersPerPage, setUserPerPage] = useState(10);
-  // const usersPerPage = 10;
 
   const handleSearchChange = (event: any) => {
     setCurrentPage(1); // Kembali ke halaman pertama ketika kata kunci pencarian berubah
     setSearchTerm(event.target.value);
   };
+  const totalPasien = listPasien.length;
+  const pasienSelesai = listPasien.filter((data: PasienType) => {
+    return data.status.kd_status.includes("1");
+  }).length;
+  const pasienBelumSelesai = listPasien.filter((data: PasienType) => {
+    return data.status.kd_status.includes("0");
+  }).length;
 
   // Filter data berdasarkan kata kunci pencarian
-  const filteredUsers = pasien.filter((pasien: Pasien) =>
-    pasien.nama.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredUsers = listPasien.filter((data: PasienType) => {
+    return data.pasien.nama.toLowerCase().includes(searchTerm.toLowerCase());
+  });
 
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
   const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
 
-  const paginate = (pageNumber: any) => setCurrentPage(pageNumber);
-
-  const calculateAge = (birthday: any) => {
-    // birthday is a date
-    var ageDifMs = Date.now() - birthday.getTime();
-    var ageDate = new Date(ageDifMs); // miliseconds from epoch
-    return Math.abs(ageDate.getUTCFullYear() - 1970);
-  };
+  // const paginate = (pageNumber: any) => setCurrentPage(pageNumber);
 
   return (
     <div className="mt-6">
       <div className="flex items-end justify-between">
         <div className="flex mt-2 gap-4">
-          <div className="px-6 py-2 rounded bg-accent/65">
+          <div className="px-6 py-2 bg-accent/65 rounded-xl">
             <h1 className="text-accent-content text-lg">Total Pasien</h1>
             <div className="flex flex-row gap-4 justify-center items-center">
               <FontAwesomeIcon
@@ -100,10 +73,12 @@ const TabelPasien = ({
                 size="xl"
                 className="text-accent-content"
               />
-              <h1 className="text-accent-content font-bold text-xl">70</h1>
+              <h1 className="text-accent-content font-bold text-xl">
+                {totalPasien}
+              </h1>
             </div>
           </div>
-          <div className="px-6 py-2 rounded bg-success/65">
+          <div className="px-6 py-2 bg-success/65 rounded-xl">
             <h1 className="text-success-content text-lg">Sudah Selesai</h1>
             <div className="flex flex-row gap-4 justify-center items-center">
               <FontAwesomeIcon
@@ -116,10 +91,12 @@ const TabelPasien = ({
                 size="xl"
                 className="text-success-content"
               />
-              <h1 className="text-success-content font-bold text-xl">70</h1>
+              <h1 className="text-success-content font-bold text-xl">
+                {pasienSelesai}
+              </h1>
             </div>
           </div>
-          <div className="px-6 py-2 rounded bg-error/65">
+          <div className="px-6 py-d bg-error/65 rounded-xl">
             <h1 className="text-error-content text-lg">Belum Selesai</h1>
             <div className="flex flex-row gap-4 justify-center items-center">
               <FontAwesomeIcon
@@ -132,19 +109,21 @@ const TabelPasien = ({
                 size="xl"
                 className="text-error-content"
               />
-              <h1 className="text-error-content font-bold text-xl">70</h1>
+              <h1 className="text-error-content font-bold text-xl">
+                {pasienBelumSelesai}
+              </h1>
             </div>
           </div>
         </div>
-        <div className="flex gap-4">
+        <div className="flex gap-4 w-1/4">
           <input
             type="text"
-            className="input input-bordered text-base-content"
+            className="input input-bordered text-base-content rounded-xl w-full"
             placeholder="Cari Pasien"
             value={searchTerm}
             onChange={handleSearchChange}
           />
-          <button
+          {/* <button
             className="btn btn-primary"
             onClick={() => {
               console.log("Panggil Pasien");
@@ -159,12 +138,11 @@ const TabelPasien = ({
             }}
           >
             Tunda Pasien
-          </button>
+          </button> */}
         </div>
       </div>
       <div className="overflow-x-auto mt-4 text-neutral bg-neutral/5 rounded-xl">
         <table className="table border-collapse">
-          {/* head */}
           <thead className="bg-neutral text-neutral-content">
             <tr className="rounded-lg">
               <th>No</th>
@@ -176,187 +154,137 @@ const TabelPasien = ({
             </tr>
           </thead>
           <tbody>
-            {currentUsers.map((pasien: Pasien, index) => {
-              return (
-                <tr className="hover:bg-neutral/10" key={pasien.kd_pasien}>
-                  <td className="justify-center text-nowrap">
-                    A-00{index + 1}
-                  </td>
-                  <td>
-                    <div className="flex flex-row gap-2">
-                      <button
-                        className="bg-accent/65 rounded-lg p-2 tooltip"
-                        data-tip="Tunda Panggil"
-                        onClick={() => {
-                          console.log("Tunda Pasien");
-                        }}
-                      >
-                        <FontAwesomeIcon
-                          icon={faVolumeXmark}
-                          size="lg"
-                          className="w-4"
-                        />
-                      </button>
-                      <button
-                        className="bg-accent/65 rounded-lg p-2 tooltip"
-                        data-tip="Panggil Pasien"
-                        onClick={() => {
-                          console.log("Panggil Pasien");
-                        }}
-                      >
-                        <FontAwesomeIcon
-                          icon={faVolumeHigh}
-                          size="lg"
-                          className="w-4"
-                        />
-                      </button>
-                      <button
-                        className="bg-accent/65 rounded-lg p-2 tooltip"
-                        data-tip="Detail Pasien"
-                        onClick={() => {
-                          onPressDetail && onPressDetail(pasien);
-                        }}
-                      >
-                        <FontAwesomeIcon
-                          icon={faPenAlt}
-                          size="lg"
-                          className="w-4"
-                        />
-                      </button>
-                    </div>
-                  </td>
-                  <td className=" min-w-80">
-                    <span className="font-semibold">{pasien.kd_pasien}</span>
-                    <br />
-                    <span className="font-semibold text-lg">{pasien.nama}</span>
-                    <br />
-                    {/* {pasien.jenisKelamin} / {pasien.umur} Tahun */}
-                    Laki-Laki / {calculateAge(new Date(pasien.tgl_lahir))} Tahun
-                    <br />
-                    NIK : {pasien.no_pengenal}
-                    <br />
-                    Reg : {pasien.no_pengenal}
-                    <br />
-                    {/* {pasien.alamat} */}
-                    Jalan Kenangan No 1
-                  </td>
-                  <td>
-                    Nama Asuransi (BPJS / Umum)
-                    <br />
-                    Jenis Penjamin (BPJS Kesehatan / BPJS Ketenagakerjaan /
-                    Umum)
-                    <br />
-                    SEP: No SEP
-                  </td>
-                  <td>
-                    <div className="grid grid-cols-3 gap-2">
-                      <div
-                        key={index}
-                        className="bg-success/65 rounded-lg p-2 tooltip"
-                        data-tip="Pemeriksaan Dokter - Selesai"
-                      >
-                        <FontAwesomeIcon
-                          icon={faUserDoctor}
-                          size="lg"
-                          className="text-success-content"
-                        />
-                      </div>
-                      <div
-                        key={index}
-                        className="bg-success/65 rounded-lg p-2 tooltip"
-                        data-tip="Radiologi - Selesai"
-                      >
-                        <FontAwesomeIcon
-                          icon={faXRay}
-                          size="lg"
-                          className="text-success-content"
-                        />
-                      </div>
-                      <div
-                        key={index}
-                        className="bg-success/65 rounded-lg p-2 tooltip"
-                        data-tip="Laboratorium - Selesai"
-                      >
-                        <FontAwesomeIcon
-                          icon={faMicroscope}
-                          size="lg"
-                          className="text-success-content"
-                        />
-                      </div>
-                      <div
-                        key={index}
-                        className="bg-error/65 rounded-lg p-2 tooltip"
-                        data-tip="Farmasi - Proses"
-                      >
-                        <FontAwesomeIcon
-                          icon={faPills}
-                          size="lg"
-                          className="text-error-content"
-                        />
-                      </div>
-                      {/* {pasien.statusPelayanan.map((pasien, index) => {
-                      const icon =
-                        pasien.id == 1
-                          ? faUserDoctor
-                          : pasien.id == 2
-                          ? faMicroscope
-                          : pasien.id == 3
-                          ? faPills
-                          : pasien.id == 4
-                          ? faXRay
-                          : faCapsules;
-
-                      return (
-                        <div
-                          key={index}
-                          className={`${
-                            pasien.kodeStatus == 1
-                              ? "bg-success/65"
-                              : "bg-error/65"
-                          } rounded-lg p-2 tooltip`}
-                          data-tip={`${pasien.name} - ${pasien.status}`}
+            {currentUsers
+              .sort((a: PasienType, b: PasienType) =>
+                a.antrian.no_antrian.localeCompare(
+                  b.antrian.no_antrian,
+                  undefined,
+                  { numeric: true }
+                )
+              )
+              .map((data: PasienType, index) => {
+                return (
+                  <tr className="hover:bg-neutral/10">
+                    <td className="justify-center text-nowrap">
+                      {data.antrian.no_antrian}
+                    </td>
+                    <td>
+                      <div className="flex flex-row gap-2">
+                        <button
+                          className="bg-accent/65 rounded-lg p-2 tooltip"
+                          data-tip="Tunda Panggil"
+                          onClick={() => {
+                            console.log("Tunda Pasien");
+                          }}
                         >
                           <FontAwesomeIcon
-                            icon={icon}
+                            icon={faVolumeXmark}
                             size="lg"
-                            className={`${
-                              pasien.kodeStatus == 1
-                                ? "text-success-content"
-                                : "text-error-content"
-                            }`}
+                            className="w-4"
                           />
-                        </div>
-                      );
-                    })} */}
-                    </div>
-                  </td>
-                  <td
-                    className={`max-w-80`}
-                    // className={`max-w-80 ${
-                    //   isHover == pasien.noIdentitas
-                    //     ? "text-wrap"
-                    //     : "max-w-80 truncate ..."
-                    // }`}
-                  >
-                    Order Tindakan dari: dr Gunardi, Sp.PD Selesai Order
-                    Tindakan dari: dr Gunardi, Sp.PD Selesai Order Tindakan
-                    dari: dr Gunardi, Sp.PD Selesai Selesai
-                  </td>
-                </tr>
-              );
-            })}
+                        </button>
+                        <button
+                          className="bg-accent/65 rounded-lg p-2 tooltip"
+                          data-tip="Panggil Pasien"
+                          onClick={() => {
+                            console.log("Panggil Pasien");
+                          }}
+                        >
+                          <FontAwesomeIcon
+                            icon={faVolumeHigh}
+                            size="lg"
+                            className="w-4"
+                          />
+                        </button>
+                        <button
+                          className="bg-accent/65 rounded-lg p-2 tooltip"
+                          data-tip="Detail Pasien"
+                          onClick={() => {
+                            onPressDetail && onPressDetail(data);
+                          }}
+                        >
+                          <FontAwesomeIcon
+                            icon={faPenAlt}
+                            size="lg"
+                            className="w-4"
+                          />
+                        </button>
+                      </div>
+                    </td>
+                    <td className=" min-w-80">
+                      <span className="font-semibold">
+                        {data.pasien.kd_pasien}
+                      </span>
+                      <br />
+                      <span className="font-semibold text-lg">
+                        {data.pasien.nama}
+                      </span>
+                      <br />
+                      Laki-Laki / {data.pasien.usia.usia_formatted}
+                      <br />
+                      NIK : {data.pasien.nik}
+                      <br />
+                      Reg : {data.antrian.kode_booking_bpjs}
+                      <br />
+                      {data.pasien.alamat}
+                    </td>
+                    <td>
+                      {data.asuransi.penjamin}
+                      <br />
+                      {data.asuransi.asuransi}
+                      <br />
+                      {data.asuransi.no_sep}
+                    </td>
+                    <td>
+                      <div className="grid grid-cols-3 gap-2">
+                        {data.status_pelayanan.map((status, index) => {
+                          return (
+                            <div
+                              key={index}
+                              className={`${
+                                status.kode_status == 1
+                                  ? "bg-success/65"
+                                  : "bg-error/65"
+                              } rounded-lg p-2 tooltip`}
+                              data-tip={`${status.name} - ${status.status}`}
+                            >
+                              <FontAwesomeIcon
+                                icon={
+                                  status.id == 1
+                                    ? faUserDoctor
+                                    : status.id == 2
+                                    ? faMicroscope
+                                    : status.id == 3
+                                    ? faPills
+                                    : status.id == 4
+                                    ? faXRay
+                                    : faCapsules
+                                }
+                                size="lg"
+                                className={`${
+                                  status.kode_status == 1
+                                    ? "text-success-content"
+                                    : "text-error-content"
+                                }`}
+                              />
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </td>
+                    <td className={`max-w-80`}>{data.status.deskripsi}</td>
+                  </tr>
+                );
+              })}
           </tbody>
         </table>
       </div>
-      {pasien.length > usersPerPage && (
+      {listPasien.length > usersPerPage && (
         <div className="flex items-center gap-6 p-4">
           <div className="w-full grid">
             <div className="join place-content-end rounded-xl">
               <button
-                onClick={() =>
-                  // setCurrentPage((prevPage) => Math.max(prevPage - 1, 1))
-                  setCurrentPage(1)
-                }
+                onClick={() => setCurrentPage(1)}
                 disabled={currentPage === 1}
                 className="join-item btn"
               >
@@ -372,7 +300,7 @@ const TabelPasien = ({
                 <FontAwesomeIcon icon={faChevronLeft} size="sm" />
               </button>
               {Array.from(
-                { length: Math.ceil(pasien.length / usersPerPage) },
+                { length: Math.ceil(listPasien.length / usersPerPage) },
                 (_, i) => {
                   // Menampilkan tombol hanya untuk halaman yang berdekatan dengan currentPage
                   if (
@@ -400,12 +328,12 @@ const TabelPasien = ({
                   setCurrentPage((nextPage) =>
                     Math.min(
                       nextPage + 1,
-                      Math.ceil(pasien.length / usersPerPage)
+                      Math.ceil(listPasien.length / usersPerPage)
                     )
                   )
                 }
                 disabled={
-                  currentPage === Math.ceil(pasien.length / usersPerPage)
+                  currentPage === Math.ceil(listPasien.length / usersPerPage)
                 }
                 className="join-item btn"
               >
@@ -414,11 +342,11 @@ const TabelPasien = ({
               <button
                 onClick={() =>
                   setCurrentPage((lastPage) =>
-                    Math.ceil(pasien.length / usersPerPage)
+                    Math.ceil(listPasien.length / usersPerPage)
                   )
                 }
                 disabled={
-                  currentPage === Math.ceil(pasien.length / usersPerPage)
+                  currentPage === Math.ceil(listPasien.length / usersPerPage)
                 }
                 className="join-item btn"
               >
@@ -428,6 +356,7 @@ const TabelPasien = ({
           </div>
           <select
             className="select max-w-xs bg-neutral/20 rounded-lg "
+            defaultValue="10"
             onChange={(e) => {
               setCurrentPage(1);
               setUserPerPage(Number(e.target.value));
@@ -439,7 +368,6 @@ const TabelPasien = ({
                   key={index}
                   value={item}
                   className="text-neutral-content"
-                  selected={usersPerPage == item ? true : false}
                 >
                   {item}
                 </option>

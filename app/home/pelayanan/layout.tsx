@@ -1,5 +1,6 @@
 "use client";
 import Breadcumbs from "@/components/Items/Breadcumbs";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import {
   faBedPulse,
   faDroplet,
@@ -10,81 +11,63 @@ import {
   faWheelchair,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import axios from "axios";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { ReactNode } from "react";
-
-type UnitPelayanan = {
-  title: string;
-  urlId: string;
-  total: number;
-  icon: ReactNode;
-  isActive?: boolean;
-};
+import { useParams, usePathname, useRouter } from "next/navigation";
+import { ReactNode, useEffect, useState } from "react";
+import type { UnitPelayanan } from "../profile/page";
 
 export default function PelayananLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
-  const unitPelayanan: UnitPelayanan[] = [
-    {
-      title: "Rawat Jalan",
-      urlId: "rawat-jalan",
-      total: 56,
-      icon: <FontAwesomeIcon icon={faPersonCane} size="2x" />,
-      isActive: pathname === "/home/pelayanan/rawat-jalan" ? true : false,
-    },
-    {
-      title: "Rawat Inap",
-      urlId: "rawat-inap",
-      total: 38,
-      icon: <FontAwesomeIcon icon={faBedPulse} size="2x" />,
-      isActive: pathname === "/home/pelayanan/rawat-inap" ? true : false,
-    },
-    {
-      title: "Rehab Medis",
-      urlId: "rehab-medis",
-      total: 56,
-      icon: <FontAwesomeIcon icon={faWheelchair} size="2x" />,
-      isActive: pathname === "/home/pelayanan/rehab-medis" ? true : false,
-    },
-    {
-      title: "Hemodialisis",
-      urlId: "hemodialisis",
-      total: 56,
-      icon: <FontAwesomeIcon icon={faDroplet} size="2x" />,
-      isActive: pathname === "/home/pelayanan/hemodialisis" ? true : false,
-    },
-    {
-      title: "Forensik",
-      urlId: "forensik",
-      total: 56,
-      icon: <FontAwesomeIcon icon={faFingerprint} size="2x" />,
-      isActive: pathname === "/home/pelayanan/forensik" ? true : false,
-    },
-    {
-      title: "Gawat Darurat",
-      urlId: "igd",
-      total: 56,
-      icon: <FontAwesomeIcon icon={faLandMineOn} size="2x" />,
-      isActive: pathname === "/home/pelayanan/igd" ? true : false,
-    },
-  ];
 
-  // if (!pathname.endsWith("/home/pelayanan")) {
-  //   return <>{children}</>;
-  // }
+  const { unit }: { unit: string } = useParams();
+  const [unitPelayanan, setUnitPelayanan] = useState<UnitPelayanan[]>([]);
+
+  useEffect(() => {
+    axios.get(`${process.env.BASE_URL}/bagian`).then((res) => {
+      setUnitPelayanan(res.data.data);
+    });
+  }, []);
+
+  const isPathnameEndsWith = (pathname: string, kd_bagian: number) => {
+    return pathname.endsWith(`/pelayanan/${kd_bagian}`);
+  };
+
+  const isPathnameEndsWithAny = (
+    pathname: string,
+    unitPelayanan: UnitPelayanan[]
+  ) => {
+    return unitPelayanan.some((data) =>
+      isPathnameEndsWith(pathname, data.kd_bagian)
+    );
+  };
+
+  const customPath = () => {
+    if (isPathnameEndsWithAny(pathname, unitPelayanan)) {
+      return {
+        renderPath: `/home/pelayanan/${
+          unitPelayanan.find((val) =>
+            isPathnameEndsWith(pathname, val.kd_bagian)
+          )?.bagian
+        }`,
+        linkPath: `/home/pelayanan/${unit}`,
+      };
+    } else {
+      return {
+        renderPath: `/home/pelayanan/`,
+        linkPath: `/home/pelayanan/`,
+      };
+    }
+  };
 
   if (
-    pathname.endsWith("/pelayanan/rawat-jalan") ||
-    pathname.endsWith("/pelayanan/rawat-inap") ||
-    pathname.endsWith("/pelayanan/rehab-medis") ||
-    pathname.endsWith("/pelayanan/hemodialisis") ||
-    pathname.endsWith("/pelayanan/forensik") ||
+    isPathnameEndsWithAny(pathname, unitPelayanan) ||
     pathname.endsWith("/pelayanan")
   ) {
     return (
       <>
-        {/* <Breadcumbs /> */}
+        <Breadcumbs customPath={customPath()} />
         <main className="mt-3">
           <div className="flex flex-row gap-4">
             <div className="basis-1/4 bg-neutral-content shadow-md rounded-2xl p-4">
@@ -93,15 +76,14 @@ export default function PelayananLayout({ children }: { children: ReactNode }) {
               </h1>
 
               <div className="grid grid-cols-1 gap-6 mt-4 px-4">
-                {unitPelayanan.map((val: any, index: any) => {
+                {unitPelayanan.map((val: UnitPelayanan, index) => {
                   return (
                     <UnitPelayanan
                       key={index}
-                      title={val.title}
-                      total={val.total}
-                      isActive={val.isActive}
-                      url={val.urlId}
+                      bagian={val.bagian}
+                      total_pasien={val.total_pasien}
                       icon={val.icon}
+                      kd_bagian={val.kd_bagian}
                     />
                   );
                 })}
@@ -115,31 +97,21 @@ export default function PelayananLayout({ children }: { children: ReactNode }) {
       </>
     );
   } else {
-    return (
-      <>
-        {/* <Breadcumbs /> */}
-        {children}
-      </>
-    );
+    return children;
   }
 }
 
 const UnitPelayanan = ({
-  title,
-  total,
+  bagian,
   icon,
-  isActive,
-  url,
-}: {
-  title: string;
-  total: number;
-  icon: ReactNode;
-  isActive: boolean;
-  url: string;
-}) => {
+  total_pasien,
+  kd_bagian,
+}: UnitPelayanan) => {
+  const isActive = usePathname().endsWith(`/pelayanan/${kd_bagian}`);
+
   return (
     <Link
-      href={`/home/pelayanan/${url}`}
+      href={`/home/pelayanan/${kd_bagian}`}
       className={`shadow-md rounded-2xl p-4 cursor-pointer ${
         isActive ? "scale-110 bg-accent/70" : "hover:scale-105 bg-primary/65"
       }`}
@@ -150,7 +122,7 @@ const UnitPelayanan = ({
             isActive ? "text-accent-content" : "text-primary-content"
           }`}
         >
-          {icon}
+          <FontAwesomeIcon icon={icon} size="2x" />
         </h1>
         <div className="gap-4">
           <h1
@@ -158,7 +130,7 @@ const UnitPelayanan = ({
               isActive ? "text-accent-content" : "text-primary-content"
             }`}
           >
-            {title}
+            {bagian}
           </h1>
           <h1
             className={`text-sm ${
@@ -171,7 +143,7 @@ const UnitPelayanan = ({
                 isActive ? "text-accent-content" : "text-primary-content"
               }`}
             >
-              {total}
+              {total_pasien}
             </span>
           </h1>
         </div>
