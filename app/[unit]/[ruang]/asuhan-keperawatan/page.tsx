@@ -5,6 +5,7 @@ import Cppt from "@/components/AsuhanKeperawatan/Cppt";
 import Profil from "@/components/AsuhanKeperawatan/Profil";
 import Resume from "@/components/AsuhanKeperawatan/Resume";
 import Tindakan from "@/components/AsuhanKeperawatan/Tindakan";
+import Breadcumbs from "@/components/Items/Breadcumbs";
 import React from "react";
 
 const AsuhanKeperawatan = () => {
@@ -81,9 +82,7 @@ const AsuhanKeperawatan = () => {
           Profil
         </button>
       </div>
-      <div className="mt-4">
-        {children}
-      </div>
+      <div className="mt-4">{children}</div>
     </section>
   );
 };

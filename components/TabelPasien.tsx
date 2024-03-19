@@ -148,7 +148,7 @@ const TabelPasien = ({
               <th>No</th>
               <th>Aksi</th>
               <th>Pasien</th>
-              <th>asuransi</th>
+              <th>Asuransi</th>
               <th>Status Pelayanan</th>
               <th>Status Selesai</th>
             </tr>
@@ -164,7 +164,7 @@ const TabelPasien = ({
               )
               .map((data: PasienType, index) => {
                 return (
-                  <tr className="hover:bg-neutral/10">
+                  <tr key={index} className="hover:bg-neutral/10">
                     <td className="justify-center text-nowrap">
                       {data.antrian.no_antrian}
                     </td>

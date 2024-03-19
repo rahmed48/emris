@@ -6,13 +6,11 @@ import axios from "axios";
 import Image from "next/image";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 import { ReactNode } from "react";
 import Breadcumbs from "@/components/Items/Breadcumbs";
 
 const AsuhanLayout = ({ children }: Readonly<{ children: ReactNode }>) => {
   const router = useRouter();
-  const dispatch = useDispatch();
   const pathname = usePathname();
   const { unit, list, pasien }: { unit: string; list: string; pasien: string } =
     useParams();

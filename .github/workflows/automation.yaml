@@ -1,20 +1,20 @@
-name: Deploy Demo
+# name: Deploy Demo
 
-on: 
-  pull_request:
-    branches:
-      - main
+# on: 
+#   pull_request:
+#     branches:
+#       - main
 
-jobs:
-  build:
-    name: Deploy Demo
-    runs-on: ubuntu-latest
-    steps:
-      - name: SSH Remote
-        uses: fifsky/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          user: ${{ secrets.SSH_USER }}
-          pass: ${{ secrets.SSH_PASSWORD }}
-          port: ${{ secrets.SSH_PORT }}
-          command: cd /www/wwwroot/repositories/emris && git stash && git pull origin main && npm install && npm run build && sudo pm2 restart emris
+# jobs:
+#   build:
+#     name: Deploy Demo
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: SSH Remote
+#         uses: fifsky/ssh-action@master
+#         with:
+#           host: ${{ secrets.SSH_HOST }}
+#           user: ${{ secrets.SSH_USER }}
+#           pass: ${{ secrets.SSH_PASSWORD }}
+#           port: ${{ secrets.SSH_PORT }}
+#           command: cd /www/wwwroot/repositories/emris && git stash && git pull origin main && npm install && npm run build && sudo pm2 restart emris

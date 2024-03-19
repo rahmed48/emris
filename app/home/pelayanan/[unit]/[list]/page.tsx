@@ -6,7 +6,6 @@ import { faLevelUpAlt } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 
 export type StatusPelayananType = {
   id: number;
@@ -48,7 +47,6 @@ export type PasienType = {
 
 const Page = () => {
   const router = useRouter();
-  const dispatch = useDispatch();
   const { unit, list }: { unit: string; list: string } = useParams();
 
   const [isHover, setIsHover] = useState<string>();

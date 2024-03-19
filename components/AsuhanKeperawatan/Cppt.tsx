@@ -1,6 +1,8 @@
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
+import PainScale from "../Items/PainScale";
+type NumberType = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
 
 const Cppt = () => {
   // useEffect(() => {
@@ -240,12 +242,11 @@ const ListCPPT = ({ onClick }: { onClick: () => void }) => {
 };
 
 const DetailCPPT = ({ backClick }: { backClick: () => void }) => {
-  const [tab, setTab] = useState(1);
+  const [keluhanUtama, setKeluhanUtama] = useState<string>("");
 
-  const onSubmit1 = (formData: any) => {
-    console.log(formData);
-    setTab(2);
-  };
+  const [skalaNyeri, setSkalaNyeri] = useState(0 as NumberType);
+  const [color, setColor] = useState("bg-[#649f44]");
+  const [text, setText] = useState("No Pain");
 
   return (
     <div>
@@ -256,70 +257,288 @@ const DetailCPPT = ({ backClick }: { backClick: () => void }) => {
           </button>
           <div className="">
             <h1 className="text-sm text-neutral">
-              Asesmen Awal Keperawatan Dewasa/Umum
+              Catatan Perkembangan Pasien Terintegrasi
             </h1>
             <h1 className="text-sm text-neutral">
               PPA: Ns. Aleyndra, S.Kep | 03-Apr-2024 10:45
             </h1>
           </div>
         </div>
-        <div className="join">
-          <button
-            onClick={() => {
-              setTab(1);
-            }}
-            className={`join-item btn btn-sm ${tab == 1 ? "btn-active" : ""}`}
-          >
-            1
-          </button>
-          <button
-            onClick={() => {
-              setTab(2);
-            }}
-            className={`join-item btn btn-sm ${tab == 2 ? "btn-active" : ""}`}
-          >
-            2
-          </button>
-          <button
-            onClick={() => {
-              setTab(3);
-            }}
-            className={`join-item btn btn-sm ${tab == 3 ? "btn-active" : ""}`}
-          >
-            3
-          </button>
-          <button
-            onClick={() => {
-              setTab(4);
-            }}
-            className={`join-item btn btn-sm ${tab == 4 ? "btn-active" : ""}`}
-          >
-            4
-          </button>
-          <button
-            onClick={() => {
-              setTab(5);
-            }}
-            className={`join-item btn btn-sm ${tab == 5 ? "btn-active" : ""}`}
-          >
-            5
-          </button>
-          <button
-            onClick={() => {
-              setTab(6);
-            }}
-            className={`join-item btn btn-sm ${tab == 6 ? "btn-active" : ""}`}
-          >
-            6
-          </button>
-        </div>
       </div>
       <div className="divider" />
-      {/* {tab == 1 ? <Tab1 onSubmit={onSubmit1} /> : null}
-      {tab == 2 ? <Tab2 /> : null}
-      {tab == 3 ? <Tab3 /> : null}
-      {tab == 4 ? <Tab4 /> : null}
-      {tab == 5 ? <Tab5 /> : null} */}
+      <form>
+        <div className="grid-cols-2 grid gap-2 text-neutral">
+          <div className="bg-neutral-content p-2 rounded-xl shadow-md">
+            <label className="form-control">
+              <div className="label">
+                <span className="label-text font-semibold">Keluhan Utama</span>
+              </div>
+              <textarea
+                className="textarea textarea-bordered rounded-xl"
+                id="keluhan_utama"
+                name="keluhan_utama"
+                placeholder="keluhan utama"
+                value={keluhanUtama}
+                onChange={(val) => setKeluhanUtama(val.target.value)}
+              ></textarea>
+            </label>
+          </div>
+          <div className="bg-neutral-content p-2 rounded-xl shadow-md">
+            <label className="form-control">
+              <div className="label">
+                <span className="label-text font-semibold">
+                  Pemeriksaan Fisik
+                </span>
+              </div>
+              <div className="join w-full">
+                <select className="select select-bordered join-item select-sm">
+                  <option disabled selected>
+                    Pilih Bagian Tubuh
+                  </option>
+                  <option>Kaki</option>
+                  <option>Kepala</option>
+                  <option>Tangan</option>
+                </select>
+                <div className="w-full">
+                  <input
+                    className="input input-bordered join-item input-sm w-full"
+                    placeholder="Search"
+                  />
+                </div>
+                <button className="btn join-item btn-sm">
+                  <FontAwesomeIcon icon={faPlus} />
+                </button>
+              </div>
+            </label>
+          </div>
+          <div className="bg-neutral-content p-2 rounded-xl shadow-md">
+            <label className="form-control mb-4">
+              <div className="label">
+                <span className="label-text font-semibold">
+                  Tingkat Kesadaran (AVPU)
+                </span>
+              </div>
+              <input
+                type="number"
+                className="input input-bordered rounded-xl input-sm"
+              />
+            </label>
+            <span className="label-text font-semibold">Tekanan Darah</span>
+            <div className="grid grid-cols-2 gap-x-2">
+              <label className="form-control">
+                <div className="label">
+                  <span className="label-text text-sm">Sitole</span>
+                </div>
+                <input
+                  type="text"
+                  className="input input-bordered rounded-xl input-sm"
+                />
+              </label>
+              <label className="form-control">
+                <div className="label">
+                  <span className="label-text text-sm">Diastole</span>
+                </div>
+                <input
+                  type="text"
+                  className="input input-bordered rounded-xl input-sm"
+                />
+              </label>
+              <div className="col-span-2"></div>
+              <label className="form-control">
+                <div className="label">
+                  <span className="label-text text-sm">Nadi / mnt</span>
+                </div>
+                <input
+                  type="text"
+                  className="input input-bordered rounded-xl input-sm"
+                />
+              </label>
+              <label className="form-control">
+                <div className="label">
+                  <span className="label-text text-sm">Resp / mnt</span>
+                </div>
+                <input
+                  type="text"
+                  className="input input-bordered rounded-xl input-sm"
+                />
+              </label>
+              <label className="form-control">
+                <div className="label">
+                  <span className="label-text text-sm">Suhu (C)</span>
+                </div>
+                <input
+                  type="text"
+                  className="input input-bordered rounded-xl input-sm"
+                />
+              </label>
+              <div className="col-span-2"></div>
+              <label className="form-control">
+                <div className="label">
+                  <span className="label-text text-sm">TB</span>
+                </div>
+                <input
+                  type="text"
+                  className="input input-bordered rounded-xl input-sm"
+                />
+              </label>
+              <label className="form-control">
+                <div className="label">
+                  <span className="label-text text-sm">BB</span>
+                </div>
+                <input
+                  type="text"
+                  className="input input-bordered rounded-xl input-sm"
+                />
+              </label>
+              <label className="form-control ">
+                <div className="label">
+                  <span className="label-text text-sm">
+                    SpO2 - tanpa bantuan O2(%)
+                  </span>
+                </div>
+                <input
+                  type="text"
+                  className="input input-bordered rounded-xl input-sm"
+                />
+              </label>
+              <label className="form-control ">
+                <div className="label">
+                  <span className="label-text text-sm">
+                    SpO2 - dengan bantuan O2(%)
+                  </span>
+                </div>
+                <input
+                  type="text"
+                  className="input input-bordered rounded-xl input-sm"
+                />
+              </label>
+            </div>
+
+            <label className="form-control basis-1/2 mt-4">
+              <div className="label">
+                <span className="label-text text-sm">Skala Nyeri</span>
+              </div>
+              <div className="join">
+                {/* <input
+                disabled
+                type="number"
+                className="input input-bordered rounded-xl input-sm w-1/2 join-item text-primary"
+                min="0"
+                max="10"
+                value={skalaNyeri}
+              /> */}
+                <div className="join-item w-1/2 pr-2">
+                  <div
+                    className={`p-1 px-4 rounded-l-xl text-neutral bg-base-200 outline outline-1`}
+                  >
+                    {skalaNyeri}
+                  </div>
+                </div>
+                <input type="hidden" value={skalaNyeri} />
+                <div className="join-item w-1/2 pl-2">
+                  <div
+                    className={`${color} p-1 px-2 rounded-r-xl outline outline-1`}
+                  >
+                    {text}
+                  </div>
+                </div>
+              </div>
+            </label>
+            <div className="my-2 w-full">
+              <PainScale
+                onClick={(val, text, color) => {
+                  setSkalaNyeri(val == skalaNyeri ? 0 : (val as NumberType));
+                  setText(text);
+                  setColor(color);
+                }}
+                val={skalaNyeri}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <label className="form-control">
+                <div className="label">
+                  <span className="label-text text-sm">Lokasi</span>
+                </div>
+                <input
+                  type="text"
+                  className="input input-bordered rounded-xl input-sm"
+                />
+              </label>
+              <label className="form-control">
+                <div className="label">
+                  <span className="label-text text-sm">Durasi</span>
+                </div>
+                <input
+                  type="text"
+                  className="input input-bordered rounded-xl input-sm"
+                />
+              </label>
+              <label className="form-control">
+                <div className="label">
+                  <span className="label-text text-sm">Pemberat</span>
+                </div>
+                <input
+                  type="text"
+                  className="input input-bordered rounded-xl input-sm"
+                />
+              </label>
+              <label className="form-control">
+                <div className="label">
+                  <span className="label-text text-sm">Peringan</span>
+                </div>
+                <input
+                  type="text"
+                  className="input input-bordered rounded-xl input-sm"
+                />
+              </label>
+              <label className="form-control">
+                <div className="label">
+                  <span className="label-text text-sm">Kualitas</span>
+                </div>
+                <input
+                  type="text"
+                  className="input input-bordered rounded-xl input-sm"
+                />
+              </label>
+              <label className="form-control">
+                <div className="label">
+                  <span className="label-text text-sm">Frekuensi</span>
+                </div>
+                <input
+                  type="text"
+                  className="input input-bordered rounded-xl input-sm"
+                />
+              </label>
+              <label className="form-control">
+                <div className="label">
+                  <span className="label-text text-sm">Menjalar</span>
+                </div>
+                <input
+                  type="text"
+                  className="input input-bordered rounded-xl input-sm"
+                />
+              </label>
+              <label className="form-control">
+                <div className="label">
+                  <span className="label-text text-sm">Jenis</span>
+                </div>
+                <input
+                  type="text"
+                  className="input input-bordered rounded-xl input-sm"
+                />
+              </label>
+            </div>
+          </div>
+          <div className="gap-2 grid-cols-1 grid">
+            <div className="bg-neutral-content p-2 rounded-xl shadow-md"></div>
+            <div className="bg-neutral-content p-2 rounded-xl shadow-md"></div>
+            <div className="bg-neutral-content p-2 rounded-xl shadow-md"></div>
+          </div>
+        </div>
+        <button type="submit" className="btn btn-primary rounded-lg mt-6">
+          Submit
+        </button>
+      </form>
     </div>
   );
 };

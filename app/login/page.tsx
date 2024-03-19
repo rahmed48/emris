@@ -10,63 +10,94 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import Alert from "@/components/Items/Alert";
-import { z } from "zod";
 
-const FormLoginSchema = z
-  .object({
-    kd_karyawan: z.string().min(6, {
-      message: "Kode Karyawan tidak boleh kurang dari 6 karakter",
-    }),
-    password: z
-      .string()
-      .min(6, { message: "Password tidak boleh kurang dari 6 karakter" })
-      .max(20, { message: "Password tidak boleh lebih dari 20 karakter" })
-      .regex(/[a-zA-Z0-9]/, {
-        message: "Password hanya boleh huruf dan angka",
-      })
-      .regex(/[A-Z]/, { message: "Password harus memiliki huruf besar" })
-      .regex(/[a-z]/, { message: "Password harus memiliki huruf kecil" })
-      .regex(/[0-9]/, { message: "Password harus memiliki angka" })
-      .regex(/[^a-zA-Z0-9]/, {
-        message: "Password harus memiliki karakter spesial",
-      }),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Password tidak sama",
-    path: ["confirmPassword"],
-  });
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Input,
+  InputLoginPassword,
+  InputLoginUsername,
+} from "@/components/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 
-export type FormLoginType = z.infer<typeof FormLoginSchema>;
+const resepType = [
+  {
+    namaResep: "Resep 1",
+    listObat: [
+      {
+        namaObat: "Paracetamol",
+        jumlah: 2,
+        satuan: "tablet",
+      },
+      {
+        namaObat: "Amoxilin",
+        jumlah: 1,
+        satuan: "tablet",
+      },
+    ],
+  },
+  {
+    namaResep: "Resep 1",
+    listObat: [
+      {
+        namaObat: "Paracetamol",
+        jumlah: 2,
+        satuan: "tablet",
+      },
+      {
+        namaObat: "Amoxilin",
+        jumlah: 1,
+        satuan: "tablet",
+      },
+    ],
+  },
+];
+
+const formLoginSchema = z.object({
+  kd_karyawan: z.string().min(6, {
+    message: "Kode Karyawan tidak boleh kurang dari 6 karakter",
+  }),
+  password: z
+    .string()
+    .min(5, { message: "Password tidak boleh kurang dari 5 karakter" }),
+});
+
+export type FormLoginType = z.infer<typeof formLoginSchema>;
 
 export default function Login() {
   const router = useRouter();
-  const [passwordShown, setPasswordShown] = useState(false);
-  const [formLogin, setFormLogin] = useState<FormLoginType>({
-    kd_karyawan: "",
-    password: "",
-    confirmPassword: "",
+  const form = useForm<FormLoginType>({
+    resolver: zodResolver(formLoginSchema),
+    defaultValues: {
+      kd_karyawan: "",
+      password: "",
+    },
   });
-
-  const toggleEye = () => {
-    setPasswordShown(passwordShown ? false : true);
-  };
-
-  const onLogin = () => {
-    axios
-      .post(`${process.env.BASE_URL}/auth/login`, formLogin)
-      .then((res) => {
-        localStorage.setItem("token", res.data.token);
-        localStorage.setItem("user", JSON.stringify(res.data.data.user));
-        // sessionStorage.setItem("token", res.data.token);
-        // sessionStorage.setItem("user", JSON.stringify(res.data.data.user));
-        router.push("/home");
-        Alert({ message: "Login Berhasil", type: "success" });
-      })
-      .catch((err) => {
-        console.log(err);
-        Alert({ message: "Kode Karyawan atau Password Salah", type: "error" });
-      });
+  const handleSubmit = async (values: {
+    kd_karyawan: string;
+    password: string;
+  }) => {
+    try {
+      const res = axios.post(`${process.env.BASE_URL}/auth/login`, values);
+      const token = (await res).data.token;
+      const user = (await res).data.data.user;
+      const data = (await res).data;
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+      router.push("/home");
+      Alert({ message: "Login Berhasil", type: "success" });
+    } catch (error) {
+      console.log(error);
+      Alert({ message: "Kode Karyawan atau Password Salah", type: "error" });
+    }
   };
 
   return (
@@ -91,64 +122,50 @@ export default function Login() {
             />
           </div>
           <div className="p-5 text-3xl font-semibold text-center ">Login</div>
-          <div className="pt-4">
-            <label className="font-medium">Kode Karyawan</label>
-          </div>
-          <div className="relative">
-            <input
-              type="number"
-              placeholder="username"
-              name="username"
-              id="username"
-              className="w-full p-2 border-b focus:border-b-2 outline-0"
-              value={formLogin.kd_karyawan}
-              onChange={(e) =>
-                setFormLogin({ ...formLogin, kd_karyawan: e.target.value })
-              }
-            />
-            <div className="absolute cursor-pointer top-2 right-3 ">
-              <FontAwesomeIcon icon={faUser} />
-            </div>
-          </div>
-          <div className="pt-4">
-            <label className="font-medium">Password</label>
-          </div>
-          <div className="relative">
-            <input
-              type={passwordShown ? "text" : "password"}
-              name="password"
-              id="password"
-              placeholder={passwordShown ? "password" : "********"}
-              className="w-full p-2 pr-3 border-b focus:border-b-2 outline-0"
-              value={formLogin.password}
-              onKeyUp={(e) => {
-                if (e.key === "Enter") {
-                  onLogin();
-                }
-              }}
-              onChange={(e) =>
-                setFormLogin({ ...formLogin, password: e.target.value })
-              }
-            />
-            <div
-              className="absolute cursor-pointer top-2 right-3"
-              id="toggle-password"
-              onClick={toggleEye}
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="space-y-8"
             >
-              <FontAwesomeIcon
-                icon={passwordShown ? faEye : faEyeLowVision}
-                color="black"
+              <FormField
+                control={form.control}
+                name="kd_karyawan"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Kode Karyawan</FormLabel>
+                    <FormControl>
+                      <InputLoginUsername
+                        placeholder="kode karyawan"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-          </div>
-          <div className="mt-14">
-            <button
-              onClick={onLogin}
-              className="w-full p-3 font-medium text-white transition-all duration-300 bg-black border-2 rounded-3xl hover:border-2 hover:border-black hover:bg-white hover:text-black"
-            >
-              Login
-            </button>
-          </div>
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <InputLoginPassword type="password" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="justify-between flex">
+                <button
+                  type="submit"
+                  className="w-full p-3 font-medium text-white transition-all duration-300 bg-black border-2 rounded-3xl hover:border-2 hover:border-black hover:bg-white hover:text-black"
+                >
+                  Login
+                </button>
+              </div>
+            </form>
+          </Form>
         </div>
       </div>
     </div>

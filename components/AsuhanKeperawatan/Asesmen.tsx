@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import React, { useEffect, useState, useRef } from "react";
 import PainScale from "../Items/PainScale";
-import PainScale2 from "../Items/PainScale2";
 import GambarManusia from "../Items/Tes";
 
 type NumberType = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
@@ -14,12 +13,6 @@ interface CheckboxState {
 }
 
 const Asesmen = () => {
-  // useEffect(() => {
-  //   window.addEventListener("beforeunload", function (e) {
-  //     e.preventDefault();
-  //     e.returnValue = "";
-  //   });
-  // }, []);
   const backClick = () => {
     setChildren(<ListAsesmen onClick={lihatDetail} />);
   };
@@ -487,7 +480,7 @@ const Tab2 = () => {
           <div className="label">
             <span className="label-text font-semibold">Tekanan Darah</span>
           </div>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-x-2">
             <label className="form-control">
               <div className="label">
                 <span className="label-text text-sm">Sitole</span>
@@ -552,7 +545,7 @@ const Tab2 = () => {
                 className="input input-bordered rounded-xl input-sm"
               />
             </label>
-            <label className="form-control col-span-3">
+            <label className="form-control">
               <div className="label">
                 <span className="label-text text-sm">
                   SpO2 - tanpa bantuan O2(%)
@@ -563,7 +556,7 @@ const Tab2 = () => {
                 className="input input-bordered rounded-xl input-sm"
               />
             </label>
-            <label className="form-control col-span-3">
+            <label className="form-control">
               <div className="label">
                 <span className="label-text text-sm">
                   SpO2 - dengan bantuan O2(%)
@@ -608,7 +601,7 @@ const Tab2 = () => {
             </div>
           </label>
           <div className="my-2 w-full">
-            <PainScale2
+            <PainScale
               onClick={(val, text, color) => {
                 setSkalaNyeri(val == skalaNyeri ? 0 : (val as NumberType));
                 setText(text);
@@ -617,7 +610,7 @@ const Tab2 = () => {
               val={skalaNyeri}
             />
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-x-4">
             <label className="form-control">
               <div className="label">
                 <span className="label-text text-sm">Lokasi</span>
