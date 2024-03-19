@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ReactNode } from "react";
 import Providers from "@/redux/Providers";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const APP_NAME = "Emris";
 const APP_DEFAULT_TITLE = "Emris";
@@ -43,7 +45,10 @@ export default function RootLayout({
         <head>
           <link rel="icon" href="/logo.png" sizes="any" />
         </head>
-        <body>{children}</body>
+        <body>
+          {children}
+          <ToastContainer />
+        </body>
       </html>
     </Providers>
   );

@@ -5,8 +5,43 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Time from "./Items/Time";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+
+export type UserType = {
+  kd_karyawan: string;
+  kd_dokter: string;
+  nama: string;
+  nama_lengkap: string;
+  email: string;
+  no_hp: string;
+  detail: string;
+};
 
 export default function Navbar() {
+  const router = useRouter();
+  const [user, setUser] = useState<UserType>({
+    kd_karyawan: "",
+    kd_dokter: "",
+    nama: "",
+    nama_lengkap: "",
+    email: "",
+    no_hp: "",
+    detail: "",
+  });
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const user = localStorage.getItem("user");
+    // const token = sessionStorage.getItem("token");
+    // const user = sessionStorage.getItem("user");
+    if (!token || !user) {
+      router.push("/login");
+    } else {
+      setUser(JSON.parse(user));
+    }
+  }, []);
+
   return (
     <div className="navbar bg-base-100 shadow-lg sticky top-0 z-50">
       <div className="flex-1"></div>
@@ -26,7 +61,7 @@ export default function Navbar() {
         </div>
         <Notif count={2} />
         <Profile
-          name="Rahmad Alfian Syahputra"
+          name={user.nama_lengkap}
           image="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
         />
         <ThemeChanger />
@@ -37,28 +72,28 @@ export default function Navbar() {
 
 const ThemeChanger = () => {
   const theme = [
-    "dark",
+    // "dark",
     "cupcake",
     "emerald",
     "corporate",
-    "synthwave",
+    // "synthwave",
     "retro",
     "cyberpunk",
     "valentine",
     "lofi",
-    "pastel",
+    // "pastel",
     "fantasy",
-    "wireframe",
-    "black",
-    "dracula",
+    // "wireframe",
+    // "black",
+    // "dracula",
     "cmyk",
     "autumn",
-    "business",
-    "coffee",
+    // "business",
+    // "coffee",
     "winter",
-    "dim",
-    "nord",
-    "sunset",
+    // "dim",
+    // "nord",
+    // "sunset",
   ];
 
   const capitalizeFirstLetter = (str: string) => {
@@ -111,6 +146,7 @@ const ThemeChanger = () => {
 };
 
 const Profile = ({ name, image }: { name: string; image: string }) => {
+  const router = useRouter();
   return (
     <div className="dropdown dropdown-end max-h-60">
       <div tabIndex={0} role="button" className="btn m-1">
@@ -143,9 +179,22 @@ const Profile = ({ name, image }: { name: string; image: string }) => {
         </li>
         <li>
           {/* <a className="text-base-content">Logout</a> */}
-          <Link href="/login" className="text-base-content">
+          <button
+            onClick={() => {
+              // localStorage.removeItem("token");
+              // localStorage.removeItem("user");
+              sessionStorage.removeItem("token");
+              sessionStorage.removeItem("user");
+              router.push("/login");
+              // window.location.href = "/login";
+            }}
+            className="text-base-content"
+          >
             Logout
-          </Link>
+          </button>
+          {/* <Link href="/login" className="text-base-content">
+            Logout
+          </Link> */}
         </li>
       </ul>
     </div>

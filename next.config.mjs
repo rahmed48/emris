@@ -19,6 +19,9 @@ const withPWA = withPWAInit({
 });
 
 const nextConfig = {
+  env:{
+    BASE_URL:'http://api-project-adam.my.id:94/api/v1',
+  },
   images: {
     remotePatterns: [
       {

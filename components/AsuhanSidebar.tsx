@@ -8,27 +8,38 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
+
+const capitalize = (str: string) => {
+  return str.replace(/\b[a-z]/g, (char) => char.toUpperCase());
+};
 
 // function CustomSidebar() {
 const AsuhanSidebar = () => {
   const router = useRouter();
   const pathname = usePathname();
+  const { unit, ruang }: { unit: string; ruang: string } = useParams();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const toggleSidebarcollapse = () => {
     setIsCollapsed(!isCollapsed);
   };
   const menu = [
     {
+      // name: `${capitalize(unit.replace("-", " "))}`,
+      name: `Daftar Pasien`,
+      icon: <FontAwesomeIcon icon={faUser} size="lg" />,
+      url: `/home/pelayanan/${unit}/${ruang}`,
+    },
+    {
       name: "Asuhan Medis",
       icon: <FontAwesomeIcon icon={faUser} size="lg" />,
-      url: "/asuhan/medis",
+      url: `/${unit}/${ruang}/asuhan-medis`,
     },
     {
       name: "Asuhan Keperawatan",
       icon: <FontAwesomeIcon icon={faStethoscope} size="lg" />,
-      url: "/asuhan/rawatan",
+      url: `/${unit}/${ruang}/asuhan-keperawatan`,
     },
   ];
   return (
@@ -79,7 +90,8 @@ const AsuhanSidebar = () => {
                   className={`text-neutral-content py-3 px-5 flex mb-2 rounded-2xl gap-4 items-center ${
                     isCollapsed && "justify-center"
                   } ${
-                    pathname.startsWith(url)
+                    // pathname.startsWith(url)
+                    pathname === url
                       ? "bg-accent/50 text-accent-content"
                       : "bg-neutral hover:bg-accent/30"
                   }`}
