@@ -13,3 +13,7 @@ export const dirtyFormSlice = createSlice({
     },
   },
 });
+
+export type dirtyFormType = {
+  isDirty: boolean;
+};

@@ -43,7 +43,7 @@ export default function RootLayout({
     <Providers>
       <html lang="en" data-theme="nord">
         <head>
-          <link rel="icon" href="/logo.png" sizes="any" />
+          <link rel="icon" href="/EMRIS.png" sizes="any" />
         </head>
         <body>
           {children}
