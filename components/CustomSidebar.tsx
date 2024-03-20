@@ -59,16 +59,16 @@ const CustomSidebar = () => {
           <Image
             width={50}
             height={50}
-            src="/images/logo.png"
+            src="/images/EMRIS-BG.png"
             alt="logo"
             className="object-contain rounded-full"
           />
           <div className={`${isCollapsed && "hidden"}`}>
             <p className={`text-neutral-content text-2xl font-semibold`}>
-              Emris
+              EMRIS
             </p>
             <p className={`text-neutral-content text-xs font-light`}>
-              Electronic Medical Record
+              Electronic Medical Record Information System
             </p>
           </div>
         </Link>

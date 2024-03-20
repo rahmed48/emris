@@ -68,7 +68,7 @@ const AsuhanSidebar = () => {
           <Image
             width={50}
             height={50}
-            src="/images/logo.png"
+            src="/images/EMRIS.png"
             alt="logo"
             className="object-contain rounded-full"
           />

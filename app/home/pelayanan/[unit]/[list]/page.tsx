@@ -2,50 +2,53 @@
 
 import Breadcumbs from "@/components/Items/Breadcumbs";
 import TabelPasien from "@/components/TabelPasien";
+import { pasienSlice, PasienType } from "@/redux/pasienReducers";
 import { faLevelUpAlt } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
-export type StatusPelayananType = {
-  id: number;
-  name: string;
-  status: string;
-  kode_status: number;
-};
+// export type StatusPelayananType = {
+//   id: number;
+//   name: string;
+//   status: string;
+//   kode_status: number;
+// };
 
-export type PasienType = {
-  status: {
-    kd_status: string;
-    deskripsi: string;
-  };
-  antrian: {
-    no_antrian: string;
-    kode_booking_bpjs: string;
-  };
-  pasien: {
-    kd_pasien: string;
-    nik: string;
-    nama: string;
-    gelar_depan: string;
-    gelar_belakang: string;
-    nama_lengkap: string;
-    alamat: string;
-    usia: {
-      tahun: number;
-      tanggal_lahir: string;
-      usia_formatted: string;
-    };
-  };
-  asuransi: {
-    asuransi: string;
-    penjamin: string;
-    no_sep: string;
-  };
-  status_pelayanan: StatusPelayananType[];
-};
+// export type PasienType = {
+//   status: {
+//     kd_status: string;
+//     deskripsi: string;
+//   };
+//   antrian: {
+//     no_antrian: string;
+//     kode_booking_bpjs: string;
+//   };
+//   pasien: {
+//     kd_pasien: string;
+//     nik: string;
+//     nama: string;
+//     gelar_depan: string;
+//     gelar_belakang: string;
+//     nama_lengkap: string;
+//     alamat: string;
+//     usia: {
+//       tahun: number;
+//       tanggal_lahir: string;
+//       usia_formatted: string;
+//     };
+//   };
+//   asuransi: {
+//     asuransi: string;
+//     penjamin: string;
+//     no_sep: string;
+//   };
+//   status_pelayanan: StatusPelayananType[];
+// };
 
 const Page = () => {
+  const dispatch = useDispatch();
   const router = useRouter();
   const { unit, list }: { unit: string; list: string } = useParams();
 
@@ -57,7 +60,7 @@ const Page = () => {
 
   useEffect(() => {
     axios.get(`${process.env.BASE_URL}/pasien/${list}`).then((res) => {
-      console.log(res.data);
+      // console.log(res.data);
       setListPasien(res.data.data);
       setBagian(res.data.bagian);
       setSubBagian(res.data.unit);
@@ -67,6 +70,9 @@ const Page = () => {
 
   const detailPasien = (pasien: any) => {
     router.push(`/${unit}/${list}/asuhan-medis`);
+    dispatch(pasienSlice.actions.setPasien(pasien));
+    // add data to redux pasien slice
+    // pasienSlice.actions.setPasien(pasien);
   };
 
   const customPath = () => {
