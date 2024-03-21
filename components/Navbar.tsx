@@ -181,10 +181,10 @@ const Profile = ({ name, image }: { name: string; image: string }) => {
           {/* <a className="text-base-content">Logout</a> */}
           <button
             onClick={() => {
-              // localStorage.removeItem("token");
-              // localStorage.removeItem("user");
-              sessionStorage.removeItem("token");
-              sessionStorage.removeItem("user");
+              localStorage.removeItem("token");
+              localStorage.removeItem("user");
+              // sessionStorage.removeItem("token");
+              // sessionStorage.removeItem("user");
               router.push("/login");
               // window.location.href = "/login";
             }}

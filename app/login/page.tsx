@@ -6,7 +6,7 @@ import {
   faEyeLowVision,
 } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import Alert from "@/components/Items/Alert";
@@ -81,6 +81,15 @@ export default function Login() {
       password: "",
     },
   });
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const user = localStorage.getItem("user");
+    if (token && user) {
+      router.push("/home");
+    }
+  }, []);
+
   const handleSubmit = async (values: {
     kd_karyawan: string;
     password: string;
