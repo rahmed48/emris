@@ -1,37 +1,109 @@
 "use client";
+import {
+  faChevronLeft,
+  faChevronRight,
+  faStethoscope,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import "../app/globals.css";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
 
-export default function Sidebar({ menu, onClick, title }: any) {
+const Sidebar = () => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const toggleSidebarcollapse = () => {
+    setIsCollapsed(!isCollapsed);
+  };
+  const menu = [
+    {
+      name: "Profile",
+      icon: <FontAwesomeIcon icon={faUser} size="lg" />,
+      url: "/home/profile",
+      url2: "/home/profile",
+    },
+    {
+      name: "Pelayanan",
+      icon: <FontAwesomeIcon icon={faStethoscope} size="lg" />,
+      url: "/home/pelayanan",
+      url2: "/home/asuhan",
+    },
+  ];
   return (
-    <div className="drawer-side z-50 shadow-lg">
-      <label
-        htmlFor="my-drawer-2"
-        className=" drawer-overlay justify-between flex items-center"
-        aria-label="close sidebar"
+    <div className="relative">
+      <button
+        className="absolute right-1/2 bottom-4 border-none bg-neutral-content rounded-2xl justify-center items-center cursor-pointer translate-x-1/2 py-2 px-4 text-neutral inline-block"
+        onClick={toggleSidebarcollapse}
       >
-        <span className="hidden lg:block bg-neutral w-full">
-          <h1 className="p-5 text-center font-semibold text-xl text-neutral-content">
-            {title}
-          </h1>
-        </span>
-      </label>
-      <ul className="menu p-4 w-80 min-h-full bg-neutral">
-        {menu.map((val: any, index: any) => {
-          return (
-            <li
-              onClick={onClick(val)}
-              key={index}
-              className={`mt-1 rounded-lg ${val.isActive ? "bg-neutral-600" : "hover:bg-neutral"}`}
-            >
-              <a className="text-neutral-content font-semibold gap-4 py-4">
-                {val.icon}
-                {val.name}
-              </a>
-            </li>
-          );
-        })}
-      </ul>
+        {isCollapsed ? (
+          <FontAwesomeIcon icon={faChevronRight} size="lg" />
+        ) : (
+          <FontAwesomeIcon icon={faChevronLeft} size="lg" />
+        )}
+      </button>
+      <aside
+        className={`h-screen bg-base-100/70 p-4 transition-all overflow-hidden bg-neutral ${
+          isCollapsed ? "w-24" : "w-64"
+        }`}
+      >
+        <Link
+          href={"/home"}
+          className={`w-full flex items-center gap-4 ${
+            isCollapsed && "justify-center"
+          }`}
+        >
+          <Image
+            width={50}
+            height={50}
+            src="/images/EMRIS-BG.png"
+            alt="logo"
+            className="object-contain rounded-full"
+          />
+          <div className={`${isCollapsed && "hidden"}`}>
+            <p className={`text-neutral-content text-2xl font-semibold`}>
+              EMRIS
+            </p>
+            <p className={`text-neutral-content text-xs font-light`}>
+              Electronic Medical Record Information System
+            </p>
+          </div>
+        </Link>
+        <div className="divider divider-accent"></div>
+        <ul className="list-none">
+          {menu.map(({ name, url, url2, icon }) => {
+            return (
+              <li className="items-center justify-center" key={name}>
+                <Link
+                  className={`text-neutral-content py-3 px-5 flex mb-2 rounded-2xl gap-4 items-center ${
+                    isCollapsed && "justify-center"
+                  } ${
+                    pathname.startsWith(url)
+                      ? "bg-accent/50 text-accent-content"
+                      : pathname.startsWith(url2)
+                      ? "bg-accent/50 text-accent-content"
+                      : "bg-neutral hover:bg-accent/30"
+                  }`}
+                  href={url}
+                >
+                  <span className="inline-block text-lg">{icon}</span>
+                  <span
+                    className={`inline-block text-lg delay-1000 ${
+                      isCollapsed && "hidden"
+                    }`}
+                  >
+                    {name}
+                  </span>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </aside>
     </div>
   );
-}
+};
+
+export default Sidebar;

@@ -1,8 +1,5 @@
 "use client";
-import {
-  PasienType,
-  StatusPelayananType,
-} from "@/app/home/pelayanan/[unit]/[list]/page";
+import { PasienType } from "@/redux/pasienReducers";
 import {
   faAnglesLeft,
   faAnglesRight,
