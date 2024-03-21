@@ -8,8 +8,7 @@ const withPWA = withPWAInit({
   reloadOnOnline: true,
   sw: "service-worker.js",
   register: true,
-  disable: process.env.NODE_ENV === "development",
-  // disable: false,
+  disable: false,
   workboxOptions: {
     disableDevLogs: true,
   },

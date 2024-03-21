@@ -8,29 +8,34 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 
 // function CustomSidebar() {
-const CustomSidebar = () => {
+const DetailSidebar = () => {
   const router = useRouter();
   const pathname = usePathname();
+  const { unit, ruang }: { unit: string; ruang: string } = useParams();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const toggleSidebarcollapse = () => {
     setIsCollapsed(!isCollapsed);
   };
   const menu = [
     {
-      name: "Profile",
+      // name: `${capitalize(unit.replace("-", " "))}`,
+      name: `Daftar Pasien`,
       icon: <FontAwesomeIcon icon={faUser} size="lg" />,
-      url: "/home/profile",
-      url2: "/home/profile",
+      url: `/home/pelayanan/${unit}/${ruang}`,
     },
     {
-      name: "Pelayanan",
+      name: "Asuhan Medis",
+      icon: <FontAwesomeIcon icon={faUser} size="lg" />,
+      url: `/${unit}/${ruang}/asuhan-medis`,
+    },
+    {
+      name: "Asuhan Keperawatan",
       icon: <FontAwesomeIcon icon={faStethoscope} size="lg" />,
-      url: "/home/pelayanan",
-      url2: "/home/asuhan",
+      url: `/${unit}/${ruang}/asuhan-keperawatan`,
     },
   ];
   return (
@@ -74,16 +79,15 @@ const CustomSidebar = () => {
         </Link>
         <div className="divider divider-accent"></div>
         <ul className="list-none">
-          {menu.map(({ name, url, url2, icon }) => {
+          {menu.map(({ name, url, icon }) => {
             return (
               <li className="items-center justify-center" key={name}>
                 <Link
                   className={`text-neutral-content py-3 px-5 flex mb-2 rounded-2xl gap-4 items-center ${
                     isCollapsed && "justify-center"
                   } ${
-                    pathname.startsWith(url)
-                      ? "bg-accent/50 text-accent-content"
-                      : pathname.startsWith(url2)
+                    // pathname.startsWith(url)
+                    pathname === url
                       ? "bg-accent/50 text-accent-content"
                       : "bg-neutral hover:bg-accent/30"
                   }`}
@@ -107,4 +111,4 @@ const CustomSidebar = () => {
   );
 };
 
-export default CustomSidebar;
+export default DetailSidebar;
